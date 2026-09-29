@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>倉庫 PDA｜作業情境模擬</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Microsoft JhengHei",sans-serif;color:#19334b;background:#edf2f6}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{min-height:48px;padding:12px 14px;border:0;border-radius:9px;background:#1264cd;color:white;font-weight:700;cursor:pointer}button:hover{filter:brightness(.96)}button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #e4a629;outline-offset:3px}.secondary{background:#eaf0f7;color:#244a70}.warning{background:#fff0e8;color:#99471a;border:1px solid #efd0bb}.quiet{background:transparent;color:#61768a;font-size:13px}.full{width:100%}.stack{display:grid;gap:10px}.shell{max-width:440px;margin:24px auto;padding:0 12px 24px}.heading{margin:0 0 14px;padding:0 4px}.heading h1{font-size:22px;margin:0 0 5px}.heading p{font-size:13px;color:#61768a;margin:0;line-height:1.6}.tabs{display:flex;background:#dce5ee;padding:4px;border-radius:12px;margin-bottom:12px;gap:4px}.tabs button{flex:1;background:transparent;color:#597086}.tabs button[aria-pressed=true]{background:#fff;color:#0757b9;box-shadow:0 2px 6px #19334b15}.device{border:7px solid #203448;border-radius:24px;background:#f8fafc;overflow:clip;box-shadow:0 14px 35px #20344818}.bar{background:#0955ac;color:white;padding:14px 16px;font-weight:800;display:flex;justify-content:space-between;gap:8px}.bar small{font-size:11px;font-weight:500;align-self:center;opacity:.85}.progress{background:#eaf2ff;padding:12px 16px;border-bottom:1px solid #d6e3f2;font-size:13px;line-height:1.6}.progress strong{display:block;font-size:17px;color:#0a529e}.content{padding:20px 16px;min-height:280px}h2{font-size:22px;margin:0 0 12px;outline:none}p{line-height:1.65}.muted{font-size:13px;color:#657b8e}.rows{display:grid;gap:8px;margin:16px 0}.row{background:white;border:1px solid #dce5ef;border-radius:9px;padding:13px;display:flex;justify-content:space-between;align-items:center;gap:12px}.row small{display:block;color:#6c8092;font-size:12px;margin-top:4px}.row b{white-space:nowrap}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}.metric{border-radius:9px;padding:10px 12px;background:#edf1f6;font-size:13px}.metric b{display:block;font-size:23px;margin-top:4px}.remaining{grid-column:1/-1;background:#e5efff;color:#0955ac;display:flex;justify-content:space-between;align-items:center}.remaining b{font-size:34px;margin:0}.notice{background:#fff4e3;color:#845111;border-radius:10px;padding:13px;line-height:1.6;font-size:14px;margin:14px 0}.error{background:#ffebee;color:#a91e32;border:1px solid #f0c4cb}.ok{background:#e5f5eb;color:#126b43}.success{color:#137848}.mark{font-size:40px;line-height:1;margin-bottom:16px}.footer{border-top:1px solid #dce5ee;background:white;padding:12px 16px;display:grid;gap:8px}.footer .pair{display:flex;gap:8px}.pair button{flex:1;font-size:13px}label{display:block;font-size:14px;font-weight:700;margin:12px 0 8px}input{width:100%;min-height:50px;border:1px solid #aebfd0;border-radius:8px;padding:12px;font-size:20px;background:#fff;color:#19334b}form button{margin-top:10px}.barcode{width:115px;height:28px;margin:20px auto;background:repeating-linear-gradient(90deg,#253c53 0 2px,transparent 2px 4px,#253c53 4px 5px,transparent 5px 9px,#253c53 9px 12px,transparent 12px 14px)}details{margin-top:14px}summary{color:#637b90;font-size:13px;padding:12px 0;cursor:pointer;min-height:48px}.note{text-align:center;font-size:11px;color:#687d90;line-height:1.6;margin:10px 0}.reset{display:block;margin:6px auto}.route{font-size:12px;color:#748697;margin:12px 0 0;line-height:1.65}@media(max-width:480px){.shell{margin:14px auto;padding:0 10px 16px}.device{border-width:5px}.content{padding:18px 14px}.footer{padding:12px 14px max(12px,env(safe-area-inset-bottom))}.heading h1{font-size:20px}}
+.language{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0 0 12px;font-size:13px}.language select{font:inherit;min-height:48px;max-width:100%;padding:8px 12px;border:1px solid #bdcddd;border-radius:9px;background:white;color:#244a70}.language select:focus-visible{outline:3px solid #e4a629;outline-offset:3px}.row>span{min-width:0}.row b{white-space:normal;text-align:right}.bar>span{min-width:0}.bar small{flex-shrink:0}button{overflow-wrap:anywhere}
+.purpose{margin:0 0 14px;padding:0 14px;background:#f8fafc;border:1px solid #d5e0eb;border-radius:10px}.purpose summary{color:#244a70;font-weight:700;line-height:1.6}.purpose ul{padding-left:20px;margin:4px 0 12px;font-size:13px;line-height:1.75}.purpose li{margin-bottom:9px}.purpose p{border-top:1px solid #dce5ee;padding-top:10px;margin:0 0 14px;font-size:12px;color:#657b8e}
+</style>
+</head>
+<body>
+<main class="shell">
+<div class="language"><label for="language" style="margin:0">語言</label><select id="language" aria-label="語言"><option value="zh-Hant">繁體中文</option><option value="ko">한국어</option><option value="en">English</option></select></div>
+<header class="heading"><h1>倉庫 PDA 上架・模擬情境</h1><p>個人作業構想，模擬兩種操作方式，供交流討論。</p></header>
+<details class="purpose" id="purpose"><summary>這個模擬想探討什麼？</summary><ul>
+<li><strong>少一點重複操作：</strong>減少往返查詢與重掃商品車。</li>
+<li><strong>不用自己記數量：</strong>直接看到已上架與剩餘數量。</li>
+<li><strong>避免誤關整車：</strong>尚有商品未完成時，阻擋完成動作。</li>
+<li><strong>減少對車碼的依賴：</strong>首次掃描後，在同一次未中斷作業中接續上架。</li>
+</ul><p>個人作業構想，供情境討論；實際可行性仍需依現場系統確認。</p></details>
+<nav class="tabs" aria-label="切換操作流程"><button data-mode="current" aria-pressed="true">原作業情境</button><button data-mode="improved" aria-pressed="false">構想作業情境</button></nav>
+<section class="device" aria-label="PDA 操作畫面" id="app"></section>
+<button id="restart" class="quiet reset">↺ 重新開始目前流程</button>
+<p class="note">Demo 假資料 · 切換流程保留進度，重新整理全部重設</p>
+</main>
+<script>
+'use strict';
+// Translate presentation only. Barcode values, quantities and workflow state stay unchanged.
+let language='zh-Hant';
+const COPY=[
+ ['這個模擬想探討什麼？','What does this simulation explore?','이 시뮬레이션에서 살펴볼 점은?'],
+ ['少一點重複操作：','Fewer repeated steps:','반복 작업 줄이기:'],
+ ['減少往返查詢與重掃商品車。','Reduce repeated lookups and cart rescans.','조회 화면을 오가는 횟수와 카트 재스캔을 줄입니다.'],
+ ['不用自己記數量：','Less to keep in mind:','수량을 외울 필요 없이:'],
+ ['直接看到已上架與剩餘數量。','See quantities put away and remaining at a glance.','적치 완료 수량과 잔여 수량을 바로 확인합니다.'],
+ ['避免誤關整車：','Avoid closing a cart too early:','카트 조기 마감 방지:'],
+ ['尚有商品未完成時，阻擋完成動作。','Block cart completion while any items remain unfinished.','미완료 상품이 남아 있으면 카트 완료를 차단합니다.'],
+ ['減少對車碼的依賴：','Less reliance on the cart barcode:','카트 바코드 의존도 줄이기:'],
+ ['首次掃描後，在同一次未中斷作業中接續上架。','After the first scan, continue putaway within the same uninterrupted session.','첫 스캔 후 작업이 중단되지 않은 동일 세션에서 적치를 계속합니다.'],
+ ['個人作業構想，供情境討論；實際可行性仍需依現場系統確認。','A personal workflow idea for discussion. Feasibility still needs to be checked against the system used on site.','상황별 논의를 위한 개인적인 작업 아이디어입니다. 실제 적용 가능성은 현장 시스템에 따라 확인해야 합니다.'],
+ ['語言','Language','언어'],
+ ['倉庫 PDA｜作業情境模擬','Warehouse PDA | Work scenario simulation','창고 PDA | 기존 및 아이디어 시나리오'],
+ ['倉庫 PDA 上架・模擬情境','Warehouse PDA · Scenario simulation','창고 PDA · 작업 시뮬레이션'],
+ ['個人作業構想，模擬兩種操作方式，供交流討論。','A personal workflow idea: two simulated approaches for discussion.','개인적인 작업 아이디어로, 두 가지 작업 방식을 시뮬레이션하여 의견을 나눕니다.'],
+ ['切換操作流程','Switch workflow','작업 절차 전환'],['PDA 操作畫面','PDA work screen','PDA 작업 화면'],
+ ['原作業情境','Original scenario','기존 작업 시나리오'],['構想作業情境','Concept scenario','아이디어 시나리오'],
+ ['↺ 重新開始目前流程','↺ Restart this workflow','↺ 현재 절차 다시 시작'],
+ ['Demo 假資料 · 切換流程保留進度，重新整理全部重設','Demo data · Switching keeps progress; refreshing resets both flows.','데모 데이터 · 절차 전환 시 진행 상태 유지, 새로고침 시 모두 초기화'],
+ ['泡麵','Instant noodles','라면'],['飲料','Drinks','음료'],['糖果','Candy','사탕'],
+ ['主選單','Main menu','메인 메뉴'],['貨物查詢','Cart lookup','상품 조회'],['陳列（上架）','Putaway','적치'],['本車商品','Cart items','카트 상품'],
+ ['返回貨物查詢','Back to lookup','상품 조회로 돌아가기'],['模擬現行風險','Current risk demo','기존 작업 시나리오 위험 체험'],['完成動作已阻擋','Closure blocked','마감 차단됨'],['商品車已完成','Cart complete','카트 완료'],
+ ['請選擇作業','Choose a task','작업을 선택하세요'],
+ ['直接進入陳列，即可查看本車商品。','Open Putaway to see the items on this cart.','적치 메뉴에서 카트 상품을 바로 확인할 수 있습니다.'],
+ ['已查詢商品，接著進入陳列。','Items checked. Open Putaway next.','상품을 확인했습니다. 적치 메뉴로 이동하세요.'],
+ ['先查詢本車商品，再回來進入陳列。','Look up the cart first, then return here to open Putaway.','먼저 카트 상품을 조회한 뒤 돌아와 적치를 시작하세요.'],
+ ['請掃描商品車','Scan the cart','카트를 스캔하세요'],
+ ['進入陳列，需要再掃一次同一台車。','Scan the same cart again to start putaway.','적치를 시작하려면 같은 카트를 다시 스캔해야 합니다.'],
+ ['Demo 商品車：CART-001','Demo cart: CART-001','데모 카트: CART-001'],['回主選單','Main menu','메인 메뉴로'],
+ ['本車尚待上架商品','Items awaiting putaway','미적치 상품'],['CART-001 · 共 {n} 項','CART-001 · {n} item types','CART-001 · 총 {n}종'],
+ ['所有商品已上架。','All items have been put away.','모든 상품의 적치가 완료되었습니다.'],
+ ['完成的商品會從此清單消失。','Completed items disappear from this list.','완료된 상품은 이 목록에서 사라집니다.'],
+ ['✓ 所有商品均已上架','✓ All items put away','✓ 모든 상품 적치 완료'],['開始上架','Start putaway','적치 시작'],['請掃描商品','Scan an item','상품을 스캔하세요'],
+ ['下一步：掃描儲位','Next: scan a location','다음: 로케이션 스캔'],['儲位：{code}','Location: {code}','로케이션: {code}'],
+ ['請輸入本次上架數量','Enter quantity to put away','이번 적치 수량을 입력하세요'],['上架','Put away','적치'],
+ ['示範分放：A01 25、A05 25、B03 30、B08 20。','Example: A01 25, A05 25, B03 30, B08 20.','분산 적치 예시: A01 25, A05 25, B03 30, B08 20.'],
+ ['示範：{name}一次放 {n}。','Example: put away {n} units of {name} at once.','예시: {name} {n}개를 한 번에 적치합니다.'],
+ ['重掃儲位','Rescan location','로케이션 다시 스캔'],['上架成功','Putaway successful','적치 성공'],
+ ['{name} · {code} · 本次 {n}','{name} · {code} · This time: {n}','{name} · {code} · 이번 수량: {n}'],
+ ['掃描下一儲位','Scan next location','다음 로케이션 스캔'],
+ ['同商品換儲位，仍需重新掃描商品。','Scan the item again for each new location.','같은 상품도 로케이션이 바뀌면 다시 스캔해야 합니다.'],
+ ['若認為商品已做完，請回貨物查詢確認。','Think the item is done? Return to lookup to check.','상품 적치가 끝났다면 상품 조회로 돌아가 확인하세요.'],
+ ['掃描商品，繼續上架','Scan item to continue','상품 스캔 후 적치 계속'],
+ ['{name}已完成','{name} complete','{name} 완료'],['本車尚有','Still on this cart:','이 카트에 남은 상품:'],['{n} 項','{n} item types','{n}종'],['未完成。','not complete.','미완료.'],
+ ['掃下一項商品','Scan next item','다음 상품 스캔'],['返回原操作畫面','Back to task','작업 화면으로 돌아가기'],
+ ['需要再查一次','Another lookup needed','다시 조회해야 합니다'],
+ ['陳列畫面看不到累計或剩餘。','Putaway does not show totals placed or remaining.','적치 화면에서는 누적 적치 수량과 잔여 수량을 볼 수 없습니다.'],
+ ['請離開陳列，回貨物查詢確認。','Leave Putaway and return to lookup to check.','적치 메뉴를 나가 상품 조회에서 확인하세요.'],['進貨物查詢','Open cart lookup','상품 조회로 이동'],
+ ['誤關整台商品車','Cart closed too early','카트 조기 마감 오류'],
+ ['只做完其中一項，卻按了「完成／清除」。本車仍有商品未完成：','Finish / clear was pressed before all items were done. These items are still pending:','모든 상품을 완료하기 전에 완료 / 초기화를 눌렀습니다. 아직 미완료 상품이 있습니다:'],
+ ['這是現行風險模擬，Demo 保留資料。','This simulates the current risk. Demo data is kept.','기존 작업 시나리오의 위험을 보여 주는 데모입니다. 데이터는 유지됩니다.'],['返回陳列','Back to putaway','적치로 돌아가기'],
+ ['無法完成商品車','Cannot complete cart','카트를 완료할 수 없습니다'],['尚有：','Still pending:','남은 상품:'],
+ ['未完成商品仍存在，請先完成後再關閉。','Some items are unfinished. Put them away before closing the cart.','미완료 상품이 남아 있습니다. 모두 적치한 후 카트를 마감하세요.'],['繼續上架','Continue putaway','적치 계속'],
+ ['CART-001 已完成','CART-001 complete','CART-001 완료'],['所有商品均已上架 · 3 / 3 完成','All items put away · 3 / 3 complete','모든 상품 적치 완료 · 3 / 3 완료'],
+ ['可切換另一種流程體驗差異。','Switch workflows to try the difference.','다른 절차로 전환해 차이를 체험해 보세요.'],
+ ['CART-001 · 本車共 3 項','CART-001 · 3 item types','CART-001 · 총 3종'],['{done} / 3 完成 · 尚有 {n} 項','{done} / 3 complete · {n} remaining','{done} / 3 완료 · {n}종 남음'],
+ ['查看本車商品','View cart items','카트 상품 보기'],['完成商品車','Complete cart','카트 완료'],['回貨物查詢確認','Return to lookup','상품 조회로 확인'],['完成／清除','Finish / clear','완료 / 초기화'],
+ ['模擬掃描 {name}','Simulate scan: {name}','모의 스캔: {name}'],['手動輸入條碼','Enter barcode manually','바코드 직접 입력'],['條碼','Barcode','바코드'],['確認條碼','Confirm barcode','바코드 확인'],
+ ['{n} / {total} 已上架','{n} / {total} put away','{n} / {total} 적치 완료'],['剩餘 {n}','Remaining {n}','잔여 {n}'],['✓ 完成','✓ Done','✓ 완료'],['總數','Total','총수량'],['已上架','Put away','적치 완료'],['剩餘','Remaining','잔여'],
+ ['請先進入貨物查詢，查看本車商品。','Open cart lookup first to check this cart.','먼저 상품 조회에서 카트 상품을 확인하세요.'],
+ ['找不到商品車，請使用 CART-001。','Cart not found. Use CART-001.','카트를 찾을 수 없습니다. CART-001을 사용하세요.'],
+ ['此商品不屬於目前商品車。（Prototype 示意）','This item is not on this cart. (Prototype only)','현재 카트에 없는 상품입니다. (프로토타입 예시)'],
+ ['此商品已完成上架。','This item is already fully put away.','이미 적치가 완료된 상품입니다.'],
+ ['請使用 A01、A05、B03 或 B08 儲位。','Use location A01, A05, B03 or B08.','A01, A05, B03 또는 B08 로케이션을 사용하세요.'],
+ ['請輸入大於 0 的整數。','Enter a whole number greater than 0.','0보다 큰 정수를 입력하세요.'],
+ ['上架數量不可超過剩餘數量 {n}。','Quantity cannot exceed the remaining {n}.','적치 수량은 잔여 수량 {n}개를 초과할 수 없습니다.']
+];
+const escapePattern=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const translations=COPY.map(([source,en,ko])=>{const keys=[];const pattern=source.split(/(\{\w+\})/).map(part=>{if(/^\{\w+\}$/.test(part)){const key=part.slice(1,-1);keys.push(key);return ['n','done','total'].includes(key)?'(\\d+)':'(.+?)';}return escapePattern(part);}).join('');return {source,en,ko,keys,re:new RegExp('^'+pattern+'$')};});
+function translate(text){if(language==='zh-Hant')return text;const trimmed=text.trim();const exact=translations.find(r=>r.source===trimmed);if(exact)return text.replace(trimmed,exact[language]);for(const row of translations){if(!row.keys.length)continue;const match=trimmed.match(row.re);if(match){const values=Object.fromEntries(row.keys.map((k,i)=>[k,match[i+1]]));const output=row[language].replace(/\{(\w+)\}/g,(_,key)=>{const value=values[key];const item=translations.find(r=>r.source===value);return item?item[language]:value;});return text.replace(trimmed,output);}}return text;}
+const sourceText=new WeakMap();
+function localize(){document.documentElement.lang=language;document.title=translate('倉庫 PDA｜作業情境模擬');const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode()){if(node.parentElement.closest('select'))continue;if(!sourceText.has(node))sourceText.set(node,node.nodeValue);node.nodeValue=translate(sourceText.get(node));}document.querySelector('.tabs').setAttribute('aria-label',translate('切換操作流程'));document.getElementById('app').setAttribute('aria-label',translate('PDA 操作畫面'));document.getElementById('language').setAttribute('aria-label',translate('語言'));}
+const PRODUCTS=[{name:'泡麵',sku:'4710001234567',total:100},{name:'飲料',sku:'4710002234567',total:30},{name:'糖果',sku:'4710003234567',total:20}];
+const LOCATIONS=['A01','A05','B03','B08'];
+function fresh(){return {page:'home',items:PRODUCTS.map(p=>({...p,placed:0})),selected:null,location:'',inputs:{},queried:false,loaded:false,error:'',returnPage:'overview',lastQuantity:0};}
+const states={current:fresh(),improved:fresh()};let mode='current';
+const state=()=>states[mode], improved=()=>mode==='improved', remaining=p=>p.total-p.placed, pending=()=>state().items.filter(p=>remaining(p)>0), product=()=>state().items[state().selected];
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const button=(label,action,style='',value)=>`<button type="button" class="full ${style}" data-action="${action}" ${value===undefined?'':`data-value="${esc(value)}"`}>${label}</button>`;
+function go(page){state().page=page;state().error='';}
+function field(key,label,numeric=false){return `<label for="${key}">${label}</label><input id="${key}" data-input="${key}" value="${esc(state().inputs[key]||'')}" ${numeric?'inputmode="numeric"':'autocapitalize="characters"'} autocomplete="off" spellcheck="false">`;}
+function scan(key,action,options){return `<div class="barcode" aria-hidden="true"></div><div class="stack">${options.map(o=>button('模擬掃描 '+esc(o.label),action,'',o.code)).join('')}</div><details ${state().inputs[key]?'open':''}><summary>手動輸入條碼</summary><form data-submit="${action}">${field(key,'條碼')}<button type="submit" class="secondary full">確認條碼</button></form></details>`;}
+function rows(items,query=false){return `<div class="rows">${items.map(p=>`<div class="row"><span>${p.name}${query?'':`<small>${p.placed} / ${p.total} 已上架</small>`}</span><b class="${remaining(p)?'':'success'}">${query?remaining(p):remaining(p)?'剩餘 '+remaining(p):'✓ 完成'}</b></div>`).join('')}</div>`;}
+function metrics(p){return `<div class="metrics"><div class="metric">總數<b>${p.total}</b></div><div class="metric">已上架<b>${p.placed}</b></div><div class="metric remaining">剩餘<b>${remaining(p)}</b></div></div>`;}
+// The completion guard is independent of button appearance.
+function finish(){const s=state();if(!s.loaded||s.page==='closed')return;if(pending().length){s.returnPage=s.page;go(improved()?'blocked':'risk');return;}go('closed');}
+function act(action,value){const s=state(),p=product();s.error='';
+ switch(action){
+ case 'query':go('queryScan');break;
+ case 'home':go('home');break;
+ case 'shelf':if(!improved()&&!s.queried){s.error='請先進入貨物查詢，查看本車商品。';break;}go('cartScan');break;
+ case 'queryCart':case 'cart':{const key=action==='cart'?'cartCode':'queryCode';if((value??s.inputs[key]??'').trim()!=='CART-001'){s.error='找不到商品車，請使用 CART-001。';break;}s.inputs[key]='';if(action==='queryCart'){s.queried=true;go('queryList');}else{s.loaded=true;go(improved()?'overview':'productScan');}break;}
+ case 'start':case 'nextProduct':go('productScan');break;
+ case 'product':{const n=s.items.findIndex(x=>x.sku===(value??s.inputs.productCode??'').trim());if(n<0){s.error='此商品不屬於目前商品車。（Prototype 示意）';break;}if(!remaining(s.items[n])){s.error='此商品已完成上架。';break;}s.selected=n;s.location='';s.inputs.productCode='';s.inputs.locationCode='';s.inputs.quantity='';go('location');break;}
+ case 'nextLocation':s.location='';s.inputs.locationCode='';s.inputs.quantity='';go('location');break;
+ case 'location':{const code=(value??s.inputs.locationCode??'').trim().toUpperCase();if(!LOCATIONS.includes(code)){s.error='請使用 A01、A05、B03 或 B08 儲位。';break;}s.location=code;s.inputs.locationCode='';go('quantity');break;}
+ case 'put':{if(s.page!=='quantity'||!p||!s.location)break;const raw=(s.inputs.quantity||'').trim(),n=Number(raw);if(!/^\d+$/.test(raw)||!Number.isSafeInteger(n)||n<=0){s.error='請輸入大於 0 的整數。';break;}if(n>remaining(p)){s.error=`上架數量不可超過剩餘數量 ${remaining(p)}。`;break;}p.placed+=n;s.lastQuantity=n;s.inputs.quantity='';go(improved()&&!remaining(p)?'productDone':'success');break;}
+ case 'forget':go('forgot');break;
+ case 'list':s.returnPage=s.page;go('list');break;
+ case 'return':go(s.returnPage);break;
+ case 'finish':finish();break;
+ case 'resume':go(s.returnPage);break;
+ }render(true);
+}
+const titles={home:'主選單',queryScan:'貨物查詢',queryList:'貨物查詢',cartScan:'陳列（上架）',overview:'陳列（上架）',productScan:'陳列（上架）',location:'陳列（上架）',quantity:'陳列（上架）',success:'陳列（上架）',productDone:'陳列（上架）',list:'本車商品',forgot:'返回貨物查詢',risk:'模擬現行風險',blocked:'完成動作已阻擋',closed:'商品車已完成'};
+function render(focus=false){const s=state(),p=product(),is=improved(),left=pending().length;let html='';
+ switch(s.page){
+ case 'home':html=`<h2>請選擇作業</h2><p class="muted">${is?'直接進入陳列，即可查看本車商品。':s.queried?'已查詢商品，接著進入陳列。':'先查詢本車商品，再回來進入陳列。'}</p><div class="stack">${!is?button('貨物查詢','query',s.queried?'secondary':''):''}${button('陳列（上架）','shelf',!is&&!s.queried?'secondary':'')}</div>`;break;
+ case 'queryScan':case 'cartScan':html=`<h2>請掃描商品車</h2><p class="muted">${s.page==='cartScan'&&!is?'進入陳列，需要再掃一次同一台車。':'Demo 商品車：CART-001'}</p>${scan(s.page==='queryScan'?'queryCode':'cartCode',s.page==='queryScan'?'queryCart':'cart',[{label:'CART-001',code:'CART-001'}])}${button('回主選單','home','secondary')}`;break;
+ case 'queryList':html=`<h2>本車尚待上架商品</h2><p class="muted">CART-001 · 共 ${left} 項</p>${rows(pending(),true)}${left?'':'<div class="notice ok">所有商品已上架。</div>'}<p class="muted">完成的商品會從此清單消失。</p>${button('回主選單','home')}`;break;
+ case 'overview':html=`<h2>${left?'本車商品':'✓ 所有商品均已上架'}</h2>${rows(s.items)}${left?button('開始上架','start'):''}`;break;
+ case 'productScan':html=`<h2>請掃描商品</h2>${scan('productCode','product',s.items.map(x=>({label:x.name,code:x.sku})))}`;break;
+ case 'location':html=`<h2>${p.name}</h2>${is?metrics(p):''}<p><strong>下一步：掃描儲位</strong></p>${scan('locationCode','location',LOCATIONS.map(x=>({label:x,code:x})))}`;break;
+ case 'quantity':html=`<h2>${p.name}</h2><p><strong>儲位：${s.location}</strong></p>${is?metrics(p):''}<form data-submit="put">${field('quantity','請輸入本次上架數量',true)}<button type="submit" class="full">上架</button></form><p class="route">${p.name==='泡麵'?'示範分放：A01 25、A05 25、B03 30、B08 20。':`示範：${p.name}一次放 ${p.total}。`}</p>${button('重掃儲位','nextLocation','quiet')}`;break;
+ case 'success':html=`<div class="mark success">✓</div><h2 class="success">上架成功</h2>${is?`<p>${p.name} · ${s.location} · 本次 ${s.lastQuantity}</p>${metrics(p)}${button('掃描下一儲位','nextLocation')}`:`<p class="muted">同商品換儲位，仍需重新掃描商品。<br>若認為商品已做完，請回貨物查詢確認。</p>${button('掃描商品，繼續上架','nextProduct')}`}`;break;
+ case 'productDone':html=`<div class="mark success">✓</div><h2 class="success">${p.name}已完成</h2>${metrics(p)}<div class="notice ${left?'':'ok'}">${left?`本車尚有 <strong>${left} 項</strong> 未完成。`:'✓ 所有商品均已上架'}</div>${rows(pending(),true)}${left?button('掃下一項商品','nextProduct'):''}`;break;
+ case 'list':html=`<h2>本車商品</h2>${rows(s.items)}${button('返回原操作畫面','return')}`;break;
+ case 'forgot':html=`<h2>需要再查一次</h2><div class="notice">陳列畫面看不到累計或剩餘。<br>請離開陳列，回貨物查詢確認。</div>${button('進貨物查詢','query')}`;break;
+ case 'risk':html=`<div class="mark" style="color:#b72237">✕</div><h2>誤關整台商品車</h2><div class="notice error">只做完其中一項，卻按了「完成／清除」。本車仍有商品未完成：</div>${rows(pending(),true)}<p class="muted">這是現行風險模擬，Demo 保留資料。</p>${button('返回陳列','resume')}`;break;
+ case 'blocked':html=`<div class="mark" style="color:#b72237">⚠</div><h2>無法完成商品車</h2><p>尚有：</p>${rows(pending(),true)}<div class="notice error">未完成商品仍存在，請先完成後再關閉。</div>${button('繼續上架','resume')}`;break;
+ case 'closed':html='<div class="mark success">✓</div><h2 class="success">CART-001 已完成</h2><div class="notice ok">所有商品均已上架 · 3 / 3 完成</div><p class="muted">可切換另一種流程體驗差異。</p>';break;
+ }
+ const shelving=s.loaded&&!['home','queryScan','queryList','cartScan','forgot','closed'].includes(s.page);
+ const progress=is&&shelving?`<div class="progress">CART-001 · 本車共 3 項<strong>${3-left} / 3 完成 · 尚有 ${left} 項</strong></div>`:'';
+ const footer=shelving&&!['risk','blocked'].includes(s.page)?`<div class="footer">${is?`${s.page!=='list'?button('查看本車商品','list','secondary'):''}${button('完成商品車','finish',left?'warning':'')}`:`${button('回貨物查詢確認','forget','secondary')}${button('完成／清除','finish','warning')}`}</div>`:'';
+ document.getElementById('app').innerHTML=`<div class="bar"><span>${titles[s.page]}</span><small>${is?'構想作業情境':'原作業情境'}</small></div>${progress}<div class="content">${html}${s.error?`<div role="alert" tabindex="-1" class="notice error">${esc(s.error)}</div>`:''}</div>${footer}`;
+ document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
+ localize();
+ if(focus){const target=document.querySelector(s.error?'[role="alert"]':'#app h2');if(target){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});target.scrollIntoView({block:'nearest'});}}
+}
+// Ignore stale controls removed after submission, so rapid taps cannot double-post.
+ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!b.isConnected)return;if(b.dataset.mode){mode=b.dataset.mode;render();return;}if(b.id==='restart'){states[mode]=fresh();render();return;}if(b.dataset.action)act(b.dataset.action,b.dataset.value);});
+ document.addEventListener('submit',e=>{if(e.target.matches('[data-submit]')){e.preventDefault();if(e.target.isConnected)act(e.target.dataset.submit);}});
+ document.addEventListener('input',e=>{if(e.target.dataset.input)state().inputs[e.target.dataset.input]=e.target.value;});
+ document.getElementById('language').addEventListener('change',e=>{language=e.target.value;localize();});
+ render();
+</script>
+</body>
+</html>
+
+
