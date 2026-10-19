@@ -104,4 +104,4 @@
 - GitHub Pages 真實發布網址：待儲存庫發布後驗證。
 - 非本車商品檢查屬 Prototype 示意，真實 WMS 行為 UNKNOWN。
 - 本原型重現使用者提供的流程，不代表已連接或稽核任何正式 WMS。
-
+ PDA DEMO 網站部署確認
