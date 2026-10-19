@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>PDA 倉儲上架｜相鄰大架防呆 DEMO</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Microsoft JhengHei",sans-serif;color:#18334b;background:#edf3f8;line-height:1.55}
+*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{border:0;cursor:pointer;font-weight:700;min-height:46px;border-radius:10px;padding:10px 14px;background:#0c62c8;color:white;transition:background .15s}
+button:hover{background:#0754af}button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #e4a32b;outline-offset:3px}button:disabled{cursor:not-allowed;opacity:.5}
+button.secondary{background:#e8f0f8;color:#174c7d}button.secondary:hover{background:#d8e8f7}button.ghost{background:#fff;color:#165ca6;border:1px solid #cad9e7}button.ghost:hover{background:#edf4fb}
+a{color:#145ba6}a:hover{text-decoration:none}.wrap{max-width:1024px;margin:auto;padding:19px 16px 50px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}.top h1{font-size:clamp(23px,3vw,29px);line-height:1.3;margin:6px 0}.top p{margin:0;color:#60778b;font-size:14px}.eyebrow{color:#155fbc;font-size:12px;font-weight:800;letter-spacing:.07em}.back{flex-shrink:0;font-size:13px;padding-top:10px}
+.columns{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);align-items:start;gap:16px}.device{background:#182d43;border-radius:24px;padding:8px;box-shadow:0 18px 28px #24405725;min-width:0}.screen{background:#fafcff;border-radius:17px;overflow:hidden;min-height:590px}.device-head{background:#0753a7;color:#fff;padding:14px 17px;display:flex;justify-content:space-between;gap:12px;align-items:center}.device-head strong{font-size:16px}.device-head span{font-size:11px;opacity:.8}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:12px;background:#e8f1fc;border-bottom:1px solid #dae5f2}
+.step{display:flex;flex-direction:column;align-items:center;gap:3px;color:#668097;text-align:center;font-size:11px}.step b{display:grid;place-items:center;background:#fff;border:1px solid #bccde0;border-radius:50%;height:26px;width:26px;color:#698096}.step.active{color:#0b58aa;font-weight:800}.step.active b,.step.done b{background:#0b62bc;border-color:#0b62bc;color:#fff}.step.done{color:#21684c}
+.work{padding:18px 16px 22px}.work h2{font-size:20px;margin:0 0 5px}.subtitle{font-size:13px;color:#657c90;margin:0 0 18px}.field-label{display:block;font-weight:750;font-size:14px;margin:14px 0 6px}.scanfield{display:flex;gap:8px}.scanfield input{flex:1;min-width:0}.scanfield button{white-space:nowrap}input{width:100%;min-height:49px;border:1px solid #afc3d6;border-radius:9px;padding:10px 12px;font-size:16px;color:#152e44;background:#fff}input::placeholder{color:#8c9dad}.hint{margin:8px 0 0;color:#65798b;font-size:12px}.plain-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.token{display:inline-block;background:#e6f0fb;padding:5px 9px;border-radius:8px;font-weight:750;color:#185593;font-size:13px}.examples{margin:14px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.examples button{text-align:left;min-width:0;white-space:normal;background:#fff;border:1px solid #bfd3e7;color:#183d67;min-height:64px}.examples button:hover{background:#eaf4ff}.examples button strong,.examples button small{display:block}.examples button small{font-size:11px;font-weight:450;color:#65788b;margin-top:2px}.examples.one{grid-template-columns:1fr}.examples.one button{min-height:48px}
+.notice{border-radius:11px;padding:13px 14px;margin:16px 0;font-size:14px}.notice.info{background:#e8f2ff;color:#174f8a}.notice.fail{background:#ffecef;color:#922537;border:1px solid #f5bdc8}.notice.pass{background:#e5f6ed;color:#12623b;border:1px solid #a5dbbc}.notice strong{display:block;font-size:16px;margin-bottom:5px}.notice p{margin:4px 0}.notice ul{padding-left:20px;margin:7px 0 0}.notice li{margin:3px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.actions button{flex:1}.progress-box{padding:12px 15px;border-radius:10px;background:#eaf2fc;font-size:13px;margin-bottom:14px}.progress-track{height:8px;border-radius:8px;background:#cbddec;overflow:hidden;margin:8px 0 4px}.progress-fill{height:100%;background:#0b65c7;transition:width .15s}.muted{font-size:13px;color:#697f92}.panel{background:white;border:1px solid #dce7f1;border-radius:14px;padding:16px;margin-bottom:14px;min-width:0}.panel h3{font-size:17px;margin:0 0 6px}.panel p{font-size:13px;margin:0 0 12px;color:#5d7488}.warehouse{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.shelf{border:2px solid #dce6ef;border-radius:9px;padding:11px 3px;text-align:center;background:#f6f9fc;min-width:0}.shelf b{display:block;font-size:15px}.shelf span{display:block;color:#637a8d;font-size:10px}.shelf.target-pass{border-color:#1d9964;background:#e2f7ec}.shelf.target-fail{border-color:#ce3448;background:#ffe7eb}.shelf.conflict{border-color:#d58216;background:#fff1db}.aisle{grid-column:1/-1;padding:7px;background:#eaf0f6;border-radius:6px;color:#526a80;text-align:center;font-size:12px}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px;font-size:11px;color:#677c8d}.legend span{display:flex;align-items:center;gap:4px}.dot{height:10px;width:10px;border-radius:50%;background:#dce6ef}.dot.g{background:#1d9964}.dot.r{background:#ce3448}.dot.y{background:#d58216}
+.stock{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{padding:8px 6px;text-align:left;border-bottom:1px solid #e5edf4;vertical-align:top}th{color:#526c82;white-space:nowrap}td:nth-child(1){font-weight:750;white-space:nowrap}details{font-size:13px}summary{cursor:pointer;font-weight:750;padding:10px 0}.foot{font-size:12px;color:#677d90;line-height:1.7;margin:12px 4px}.quantity{font-weight:800;font-size:22px}.fine{font-size:12px;color:#5d7589}.quiet-link{background:transparent;border:0;color:#135ba9;min-height:36px;padding:5px;font-size:13px}.quiet-link:hover{background:#e5f1ff}.between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.project-nav{display:flex;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid #dce7f1;padding:7px;border-radius:12px;margin:0 0 16px}
+.project-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:43px;text-align:center;font-size:13px;font-weight:750;text-decoration:none;padding:9px 12px;border-radius:9px;color:#26567f;flex:1}
+.project-nav a:hover{background:#eaf2fa}.project-nav a[aria-current="page"]{background:#0c62c8;color:white}
+@media(max-width:410px){.project-nav a{font-size:12px;padding:8px}}
+.good-text{color:#147048}
+@media(max-width:740px){.columns{grid-template-columns:1fr}.wrap{padding:12px 10px 35px}.top{flex-wrap:wrap}.back{padding:0}.screen{min-height:0}.panel{padding:14px}.device{max-width:510px;margin:auto}.work{padding:17px 15px}.examples{gap:7px}}
+@media(max-width:360px){.scanfield{flex-wrap:wrap}.scanfield button{width:100%}.examples{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="top"><div><div class="eyebrow">倉儲上架情境模擬 · 模組 B · v2.1</div><h1>相鄰大架同商品防呆</h1><p>依序掃描貨物編號、商品條碼與儲位條碼；所有資料均為虛構示範。</p></div><a class="back" href="./home.html">← 返回專案入口</a></header>
+<nav class="project-nav" aria-label="專案功能切換"><a href="./home.html">功能總覽</a><a href="./index.html">A｜數量與結案</a><a href="./adjacent.html" aria-current="page">B｜相鄰儲位</a></nav>
+<div class="columns">
+<section class="device" aria-label="PDA 模擬操作區"><div class="screen"><div class="device-head"><strong>倉儲管理｜上架作業</strong><span>離線示範</span></div><nav class="steps" id="steps" aria-label="作業步驟"></nav><div class="work" id="app" aria-live="polite"></div></div></section>
+<div><section class="panel"><h3>倉庫架位俯視圖</h3><p>每個大架有五層：101（最底層）至 501（最高層）。掃描層架條碼後，才會標出相鄰衝突。</p><div id="map" class="warehouse" aria-label="兩排各四個大架，中間為走道"></div><div class="legend"><span><i class="dot g"></i>本次儲位通過</span><span><i class="dot r"></i>本次儲位不通過</span><span><i class="dot y"></i>查到同商品的相鄰架</span></div></section>
+<section class="panel"><h3>貨物與庫存狀態</h3><p>成功上架會更新下方模擬庫存，失敗不會寫入。</p><div id="summary"></div><details><summary>展開查看各架庫存</summary><div id="stock" class="stock"></div></details></section>
+<section class="panel"><h3>系統防呆規則</h3><p>不同商品可以放在相鄰大架；相同商品只要存在左右或正對面大架的任一層，就禁止上架。斜對角不受此規則限制。同一大架最多六種商品。</p><p>此頁為通用倉儲作業情境的互動原型，不代表任何企業的正式系統、作業規範或即時庫存。若用於真實環境，仍須由後端重新檢查，並妥善處理多人同時上架的資料一致性。</p><button type="button" class="secondary" data-action="reset">↺ 重置整個示範</button></section></div>
+</div><p class="foot">獨立練習用互動展示。貨物編號、商品條碼、儲位與庫存皆為模擬資料，並非來自任何實際倉庫。不使用相機掃碼、資料庫、外部 API 或瀏覽器永久儲存。<br>本頁使用「模擬掃描」按鈕或手動輸入來呈現一般掃碼作業流程。</p>
+</main>
+<script>
+'use strict';
+(function(){
+const PRODUCTS=[
+ {sku:'4710009000001',name:'泡芙',qty:12},
+ {sku:'4710009000002',name:'餅乾',qty:8},
+ {sku:'4710009000003',name:'洋芋片',qty:6},
+ {sku:'4710009000004',name:'飲料',qty:10}
+];
+const CARGO='GOODS-001';
+const RACKS=['A1','A2','A3','A4','B1','B2','B3','B4'];
+const LEVELS=['101','201','301','401','501'];
+const PUFF=PRODUCTS[0].sku,COOKIE=PRODUCTS[1].sku,CHIPS=PRODUCTS[2].sku,DRINK=PRODUCTS[3].sku;
+const initial={
+ A1:[['201',COOKIE,8]],A2:[['301',PUFF,12]],A3:[['401',CHIPS,15]],A4:[['101',DRINK,9]],
+ B1:[['501',DRINK,4]],B2:[['201','DEMO-NOODLE',20]],B3:[['301',COOKIE,6]],
+ B4:[['101',PUFF,3],['101',CHIPS,4],['201','DEMO-NOODLE',5],['301','DEMO-CHOCO',2],['401','DEMO-TEA',6],['501','DEMO-JELLY',7]]
+};
+const otherNames={'DEMO-NOODLE':'泡麵','DEMO-CHOCO':'巧克力','DEMO-TEA':'茶包','DEMO-JELLY':'果凍'};
+const productNames=Object.fromEntries(PRODUCTS.map(p=>[p.sku,p.name]));
+Object.assign(productNames,otherNames);
+const $=id=>document.getElementById(id);
+const escapeHtml=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cloneInitial=()=>Object.fromEntries(RACKS.map(r=>[r,(initial[r]||[]).map(p=>p.slice())]));
+let inventory=cloneInitial();
+let rem=Object.fromEntries(PRODUCTS.map(p=>[p.sku,p.qty]));
+let step='cargo',selectedSku='',lastLocation='',evaluation=null,message='',messageKind='info',placedQty=0;
+const orderedSteps=['cargo','product','location','done'];
+function neighbors(id){
+ if(!RACKS.includes(id)) return [];
+ const row=id[0],num=Number(id.slice(1)),out=[];
+ if(num>1)out.push({rack:row+(num-1),relation:'左側'});
+ if(num<4)out.push({rack:row+(num+1),relation:'右側'});
+ out.push({rack:(row==='A'?'B':'A')+num,relation:'正對面'});
+ return out;
+}
+function parseLocation(raw){
+ const match=/^([AB][1-4])-(101|201|301|401|501)$/.exec(String(raw||'').trim().toUpperCase());
+ return match?{rack:match[1],level:match[2],code:match[0]}:null;
+}
+// Inspects entire left, right, and facing racks by SKU, independent of layer number.
+function inspect(sku,rawLocation,quantity){
+ const location=parseLocation(rawLocation),errors=[],conflicts=[];
+ if(!Object.hasOwn(rem,sku))errors.push('商品不屬於目前貨物，或條碼無效。');
+ if(!location)errors.push('層架條碼無效，格式應為 A1-101 至 B4-501 的有效儲位。');
+ if(location && Object.hasOwn(rem,sku)){
+  const kinds=new Set(inventory[location.rack].map(x=>x[1]));
+  if(!kinds.has(sku)&&kinds.size>=6)errors.push('此大架已有六種商品，不能放入第七種。');
+  for(const adj of neighbors(location.rack)){
+   for(const entry of inventory[adj.rack]){
+    if(entry[1]===sku)conflicts.push({rack:adj.rack,relation:adj.relation,level:entry[0],code:adj.rack+'-'+entry[0]});
+   }
+  }
+  if(conflicts.length)errors.push('左右或正對面大架已有相同商品，禁止上架。');
+ }
+ if(quantity!==undefined && (!Number.isSafeInteger(quantity)||quantity<1||quantity>9999||quantity>rem[sku])){
+  errors.push('上架數量必須是 1 至剩餘數量的整數。');
+ }
+ return {ok:errors.length===0,errors,conflicts,location};
+}
+function messageHtml(){
+ if(!message)return '';
+ return `<div class="notice ${messageKind}" role="status"><strong>${messageKind==='fail'?'✕ 無法上架':messageKind==='pass'?'✓ 可以上架':'提示'}</strong><div>${escapeHtml(message)}</div>${evaluation&&evaluation.conflicts.length?`<ul>${evaluation.conflicts.map(c=>`<li>${escapeHtml(c.relation)} ${escapeHtml(c.code)}：已有「${escapeHtml(productNames[selectedSku])}」</li>`).join('')}</ul>`:''}</div>`;
+}
+function topSteps(){
+ const index=step==='confirm'?2:orderedSteps.indexOf(step);
+ $('steps').innerHTML=['貨物編號','商品條碼','層架位置','完成上架'].map((title,i)=>`<div class="step ${i===index?'active':i<index?'done':''}"><b>${i<index?'✓':i+1}</b><span>${title}</span></div>`).join('');
+}
+function progress(){
+ const total=PRODUCTS.reduce((n,p)=>n+p.qty,0),remaining=Object.values(rem).reduce((a,b)=>a+b,0),done=total-remaining;
+ return `<div class="progress-box"><div class="between"><strong>貨物：${CARGO}</strong><span>${done} / ${total} 件</span></div><div class="progress-track"><div class="progress-fill" style="width:${(done/total*100).toFixed(2)}%"></div></div><span class="muted">剩餘 ${remaining} 件待上架</span></div>`;
+}
+function productCards(){
+ return `<div class="examples" aria-label="模擬商品掃碼">${PRODUCTS.map(p=>`<button type="button" data-action="product" data-value="${p.sku}" ${rem[p.sku]===0?'disabled':''}><strong>模擬掃描 ${p.name}</strong><small>條碼 ${p.sku} ｜ 待上架 ${rem[p.sku]} 件</small></button>`).join('')}</div>`;
+}
+function locationButtons(){
+ return `<div class="examples" aria-label="模擬層架位置掃碼">${[
+  ['A1-101','測試左側架位'],['A3-501','測試右側架位'],
+  ['B2-401','測試正對面架位'],['B1-301','測試其他位置'],
+  ['A2-501','測試同一大架'],['B4-101','測試六種商品上限']
+ ].map(([code,hint])=>`<button type="button" data-action="location" data-value="${code}"><strong>掃描 ${code}</strong><small>${hint}</small></button>`).join('')}</div>`;
+}
+function renderWork(){
+ const product=PRODUCTS.find(p=>p.sku===selectedSku);
+ let html='';
+ if(step==='cargo')html=`<h2>1. 掃描貨物編號</h2><p class="subtitle">先確認這次要上架哪一批貨物，才能帶出該批商品。</p><div class="notice info"><strong>示範貨物編號</strong>${CARGO}</div><button class="secondary" type="button" data-action="cargo" data-value="${CARGO}">模擬掃描 ${CARGO}</button><form data-form="cargo"><label for="cargo-input" class="field-label">或手動輸入貨物編號</label><div class="scanfield"><input id="cargo-input" name="barcode" placeholder="例如 GOODS-001" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="貨物編號"><button type="submit">確認掃描</button></div></form>${messageHtml()}`;
+ else if(step==='product')html=`${progress()}<h2>2. 掃描商品條碼</h2><p class="subtitle">掃描商品後才可掃層架。僅列出這批貨物內的商品。</p>${productCards()}<form data-form="product"><label for="product-input" class="field-label">或手動輸入商品條碼</label><div class="scanfield"><input id="product-input" name="barcode" inputmode="numeric" placeholder="4710009000001" autocomplete="off"><button type="submit">確認掃描</button></div></form>${messageHtml()}<div class="actions"><button class="ghost" data-action="back-cargo">返回貨物編號</button></div>`;
+ else if(step==='location')html=`${progress()}<h2>3. 掃描層架位置</h2><p class="subtitle">已掃描：<strong>${escapeHtml(product.name)}</strong> <span class="token">${escapeHtml(selectedSku)}</span><br>請掃描目的層架，掃描當下自動檢查周圍大架是否已有相同商品。</p><label class="field-label" for="location-input">示範層架位置（整個儲位條碼）</label><form data-form="location"><div class="scanfield"><input id="location-input" name="barcode" placeholder="例如 A1-101" autocapitalize="characters" autocomplete="off" spellcheck="false"><button type="submit">掃描並檢查</button></div></form><p class="hint">101 最底層、501 最高層。以下按鈕相當於掃碼槍掃描。</p>${locationButtons()}${messageHtml()}<div class="actions"><button class="ghost" data-action="back-product">換一個商品</button></div>`;
+ else if(step==='confirm')html=`${progress()}<h2>4. 確認上架數量</h2><p class="subtitle">層架掃描已通過，現在才允許確認上架。</p><div class="notice pass"><strong>✓ 儲位檢查通過</strong>商品：${escapeHtml(product.name)}<br>儲位：<strong>${escapeHtml(lastLocation)}</strong><br>左右及正對面大架均未發現相同商品。</div><form data-form="commit" novalidate><label for="qty-input" class="field-label">本次上架數量（剩餘 ${rem[selectedSku]} 件）</label><input id="qty-input" name="quantity" type="number" min="1" max="${rem[selectedSku]}" step="1" value="${Math.min(5,rem[selectedSku])}" inputmode="numeric"><div class="actions"><button type="submit">✓ 確認上架並更新庫存</button><button type="button" class="ghost" data-action="back-location">重新掃描層架</button></div></form>${messageHtml()}`;
+ else if(step==='done')html=`${progress()}<h2>✓ 上架完成</h2><div class="notice pass"><strong>已成功寫入模擬庫存</strong>${escapeHtml(product.name)} × ${placedQty} 件<br>上架儲位：${escapeHtml(lastLocation)}<br>本商品尚餘 ${rem[selectedSku]} 件</div><div class="actions"><button data-action="next-product">掃描下一項商品</button>${rem[selectedSku]>0?'<button class="secondary" data-action="continue-sku">同商品繼續上架</button>':''}</div>${Object.values(rem).every(v=>v===0)?'<div class="notice pass"><strong>全部完成</strong>本批貨物已全數上架！</div>':''}`;
+ $('app').innerHTML=html;
+}
+function renderMap(){
+ const conflicts=new Set(evaluation&&evaluation.conflicts?evaluation.conflicts.map(c=>c.rack):[]);
+ const target=evaluation&&evaluation.location?evaluation.location.rack:null;
+ $('map').innerHTML=RACKS.slice(0,4).map(rackHtml).join('')+'<div class="aisle">↕　走道（A、B 兩排相對）　↕</div>'+RACKS.slice(4).map(rackHtml).join('');
+ function rackHtml(rack){
+  const types=new Set(inventory[rack].map(e=>e[1])).size;
+  const className=target===rack?(evaluation.ok?'target-pass':'target-fail'):conflicts.has(rack)?'conflict':'';
+  return `<div class="shelf ${className}" aria-label="${rack} 大架"><b>${rack}</b><span>${types} / 6 種</span></div>`;
+ }
+}
+function renderSummary(){
+ const total=PRODUCTS.reduce((n,p)=>n+p.qty,0),remaining=Object.values(rem).reduce((a,b)=>a+b,0);
+ $('summary').innerHTML=`<div class="between"><span class="token">${CARGO}</span><span class="muted">已上架 ${total-remaining} / ${total} 件</span></div><div class="fine" style="margin-top:8px">${PRODUCTS.map(p=>`${p.name} ${rem[p.sku]} 件待上架`).join('　·　')}</div>`;
+ $('stock').innerHTML='<table><thead><tr><th>大架</th><th>商品種類</th><th>層架／商品／數量</th></tr></thead><tbody>'+RACKS.map(r=>`<tr><td>${r}</td><td>${new Set(inventory[r].map(x=>x[1])).size}/6</td><td>${inventory[r].map(e=>`${e[0]} ${escapeHtml(productNames[e[1]])} ×${e[2]}`).join('、')||'空架'}</td></tr>`).join('')+'</tbody></table>';
+}
+function render(){topSteps();renderWork();renderMap();renderSummary()}
+function setMessage(text='',kind='info'){message=text;messageKind=kind}
+function scanCargo(code){
+ if(step!=='cargo')return;
+ if(String(code||'').trim().toUpperCase()!==CARGO){setMessage('貨物編號不在 DEMO 資料內，請使用 GOODS-001。','fail');render();return}
+ step='product';setMessage();render();
+}
+function scanProduct(code){
+ if(step!=='product')return;
+ const sku=String(code||'').trim();
+ if(!Object.hasOwn(rem,sku)){setMessage('這個商品條碼不屬於本批貨物。','fail');render();return}
+ if(rem[sku]<=0){setMessage('此商品已全數上架，請選擇其他商品。','fail');render();return}
+ selectedSku=sku;step='location';lastLocation='';evaluation=null;setMessage();render();
+}
+function scanLocation(code){
+ if(step!=='location')return;
+ const raw=String(code||'').trim().toUpperCase();
+ const found=inspect(selectedSku,raw);
+ evaluation=found;lastLocation=raw;
+ if(!found.ok){setMessage(found.errors.join(' '),'fail');render();return}
+ step='confirm';setMessage();render();
+}
+function putaway(raw){
+ if(step!=='confirm')return;
+ const str=String(raw||'').trim();const qty=Number(str);
+ if(!/^\d+$/.test(str)||!Number.isSafeInteger(qty)){
+  setMessage('請輸入有效正整數。','fail');render();return;
+ }
+ const result=inspect(selectedSku,lastLocation,qty); // check again immediately before writing
+ evaluation=result;
+ if(!result.ok){
+  setMessage(result.errors.join(' '),'fail');
+  if(result.conflicts.length){step='location';render();return}
+  // Keep entered quantity so it can be corrected without losing user's entry.
+  render();const input=$('qty-input');if(input)input.value=str;return;
+ }
+ const {rack,level}=result.location;
+ const existing=inventory[rack].find(x=>x[0]===level&&x[1]===selectedSku);
+ if(existing)existing[2]+=qty;else inventory[rack].push([level,selectedSku,qty]);
+ rem[selectedSku]-=qty;placedQty=qty;step='done';setMessage();render();
+}
+function reset(){inventory=cloneInitial();rem=Object.fromEntries(PRODUCTS.map(p=>[p.sku,p.qty]));step='cargo';selectedSku='';lastLocation='';evaluation=null;placedQty=0;setMessage();render()}
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-action]');if(!el)return;
+ const action=el.dataset.action, value=el.dataset.value;
+ if(action==='reset')reset();
+ else if(action==='cargo')scanCargo(value);
+ else if(action==='product')scanProduct(value);
+ else if(action==='location')scanLocation(value);
+ else if(action==='back-cargo'){step='cargo';selectedSku='';evaluation=null;setMessage();render()}
+ else if(action==='back-product'||action==='next-product'){step='product';selectedSku='';evaluation=null;lastLocation='';setMessage();render()}
+ else if(action==='back-location'||action==='continue-sku'){step='location';evaluation=null;lastLocation='';setMessage();render()}
+});
+document.addEventListener('submit',e=>{
+ const form=e.target.closest('form[data-form]');if(!form)return;
+ e.preventDefault();
+ const data=new FormData(form);
+ if(form.dataset.form==='cargo')scanCargo(data.get('barcode'));
+ if(form.dataset.form==='product')scanProduct(data.get('barcode'));
+ if(form.dataset.form==='location')scanLocation(data.get('barcode'));
+ if(form.dataset.form==='commit')putaway(data.get('quantity'));
+});
+// Expose pure inspection helpers for reproducible browser tests (not real inventory APIs).
+window.PdaDemoTest={neighbors,parseLocation,inspect,getInventory:()=>JSON.parse(JSON.stringify(inventory)),getRemaining:()=>({...rem})};
+render();
+})();
+</script>
+</body></html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="description" content="通用倉儲 PDA 作業改善互動展示：數量結案防呆與相鄰儲位同商品防呆。所有示範資料皆為虛構。">
+<title>PDA 上架流程優化｜互動展示</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Microsoft JhengHei",sans-serif;background:#edf3f8;color:#1a324a;line-height:1.6}
+*{box-sizing:border-box}
+body{margin:0}
+a{color:#105ba5}
+a:focus-visible{outline:3px solid #ecb541;outline-offset:3px;border-radius:8px}
+.shell{max-width:1120px;margin:auto;padding:22px 20px 55px}
+.masthead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:30px}
+.identity{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.01em}
+.logo{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;color:#fff;background:#0c62c8;font-size:14px;letter-spacing:-.02em}
+.chip{border:1px solid #c3d4e4;background:#fff;border-radius:30px;color:#42617d;font-size:12px;padding:6px 12px;font-weight:650}
+.hero{position:relative;background:linear-gradient(120deg,#102e4e,#0a56ad);color:white;padding:clamp(23px,5vw,49px);border-radius:25px;overflow:hidden;box-shadow:0 18px 40px #1f426020}
+.hero:after{content:"";position:absolute;width:320px;height:320px;border:1px solid #ffffff24;border-radius:50%;right:-80px;top:-135px;pointer-events:none}
+.hero:before{content:"";position:absolute;width:220px;height:220px;border:1px solid #ffffff21;border-radius:50%;right:26px;top:-70px;pointer-events:none}
+.hero .kicker{margin:0 0 12px;color:#9fd1ff;font-size:13px;letter-spacing:.08em;font-weight:800}
+.hero h1{font-size:clamp(27px,4.3vw,43px);letter-spacing:-.03em;line-height:1.32;margin:0 0 13px;max-width:630px}
+.hero p{max-width:670px;color:#d3e7fa;font-size:clamp(14px,1.6vw,16px);margin:0}
+.hero-counters{display:flex;gap:18px;flex-wrap:wrap;margin-top:27px}
+.hero-counters span{display:inline-flex;align-items:center;gap:8px;color:#e9f4ff;font-weight:700;font-size:13px}
+.hero-counters span:before{content:"✓";display:grid;place-items:center;background:#ffffff25;color:#fff;border-radius:50%;width:21px;height:21px}
+.section-title{margin:33px 0 15px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.section-title h2{font-size:clamp(20px,2.5vw,25px);margin:0}
+.section-title p{margin:0;color:#64809a;font-size:13px}
+.features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.feature{background:#fff;border:1px solid #d7e5f0;border-radius:19px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 7px 22px #2045630a}
+.visual{min-height:171px;padding:20px 22px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.visual-a{background:linear-gradient(145deg,#e7f1fc,#d8e8fa)}
+.visual-b{background:linear-gradient(145deg,#e5f7f1,#dcefeb)}
+.minipda{width:192px;border:5px solid #1a3855;border-radius:15px;background:#fff;box-shadow:0 10px 26px #15355320;overflow:hidden;transform:rotate(-3deg)}
+.pda-bar{height:24px;background:#0c62c8;color:white;text-align:center;font-size:10px;line-height:24px;font-weight:750}
+.pda-row{display:flex;justify-content:space-between;margin:9px 11px;font-size:11px;color:#537087;border-bottom:1px solid #e4ebf0;padding-bottom:5px}
+.pda-row strong{font-size:12px;color:#0d4d91}
+.pda-result{margin:9px;padding:7px;border-radius:5px;text-align:center;color:#165f40;background:#e1f5e8;font-weight:850;font-size:11px}
+.rack-scene{width:min(100%,340px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;position:relative}
+.rack{padding:11px 7px;background:#fff;border:2px solid #eeafb9;border-radius:9px;text-align:center;min-width:0}
+.rack strong{display:block;color:#a02b3c;font-size:14px}
+.rack small{display:block;color:#a94c5b;font-size:10px}
+.rack.center{background:#e9f9ee;border-color:#54bc8a}.rack.center strong{color:#1a7951}.rack.center small{color:#368565}
+.aisle{grid-column:1/-1;text-align:center;border-radius:6px;background:#cbd9dd;color:#4c6977;font-size:11px;padding:5px}
+.rack.facing{grid-column:2}
+.feature-body{padding:23px 24px 25px;display:flex;flex-direction:column;flex:1}
+.label{font-size:12px;color:#1262b6;font-weight:900;letter-spacing:.05em}
+.feature h3{font-size:23px;margin:5px 0 8px;letter-spacing:-.01em}
+.feature .summary{font-size:14px;color:#546f84;margin:0 0 12px}
+.details{padding:0;margin:0 0 23px 17px;color:#48657b;font-size:13px;flex:1}
+.details li{margin:5px 0}
+.action{display:flex;align-items:center;justify-content:center;text-align:center;min-height:51px;padding:12px 15px;border-radius:10px;text-decoration:none;background:#0c62c8;color:#fff;font-weight:850;font-size:15px;transition:background .15s,transform .15s}
+.action:hover{background:#0754af;transform:translateY(-1px)}
+.action.alt{background:#11664a}.action.alt:hover{background:#0e563e}
+.notes{margin-top:26px;padding:22px 24px;background:#fff;border:1px solid #d7e5f0;border-radius:16px}
+.notes h2{font-size:19px;margin:0 0 10px}
+.process{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.process h3{font-size:14px;margin:0 0 7px}
+.process p{font-size:13px;color:#5b758a;margin:0}
+footer{font-size:12px;color:#70869a;line-height:1.7;margin-top:21px}
+@media(max-width:700px){.shell{padding:14px 11px 32px}.masthead{margin:0 5px 16px}.hero{border-radius:17px}.features{grid-template-columns:1fr;gap:14px}.section-title{display:block}.section-title p{margin-top:3px}.process{grid-template-columns:1fr;gap:17px}.visual{min-height:145px}.feature-body{padding:18px}.notes{padding:18px}.hero-counters{gap:8px 16px}}
+@media(max-width:360px){.chip{font-size:10px}.identity{font-size:12px}.rack{padding:6px 3px}.rack strong{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="masthead"><div class="identity"><div class="logo">PDA</div><span>倉儲作業流程優化</span></div><span class="chip">互動原型 · DEMO</span></header>
+<section class="hero" aria-labelledby="hero-title">
+<p class="kicker">WAREHOUSE WORKFLOW CONCEPT</p>
+<h1 id="hero-title">把現場作業中的問題<br>轉化成可操作的改善方案</h1>
+<p>從上架數量確認，到相鄰儲位同商品檢查。兩項獨立情境，共同展示如何減少重複操作與人為疏漏。</p>
+<div class="hero-counters"><span>兩項可操作模擬</span><span>手機與電腦皆可體驗</span><span>不用註冊、安裝或登入</span></div>
+</section>
+<div class="section-title"><h2>選擇要體驗的功能</h2><p>每項功能都有自己的說明與操作步驟</p></div>
+<div class="features">
+<article class="feature" aria-labelledby="a-heading">
+<div class="visual visual-a" aria-hidden="true"><div class="minipda"><div class="pda-bar">PDA｜商品車上架</div><div class="pda-row"><span>商品總數</span><strong>100</strong></div><div class="pda-row"><span>已上架</span><strong>75</strong></div><div class="pda-row"><span>待上架</span><strong>25</strong></div><div class="pda-result">進度即時更新 ✓</div></div></div>
+<div class="feature-body"><div class="label">功能 A · 數量／結案管理</div><h3 id="a-heading">上架數量與結案防呆</h3><p class="summary">比較傳統作業與改善後的操作方式，讓數量與完成狀態更容易確認。</p>
+<ul class="details"><li>對照原作業與改善作業的差異</li><li>查看已上架、剩餘數量和整車進度</li><li>尚有商品未完成時阻擋提前結案</li></ul>
+<a class="action" href="./index.html">開始體驗功能 A →</a></div>
+</article>
+<article class="feature" aria-labelledby="b-heading">
+<div class="visual visual-b" aria-hidden="true"><div class="rack-scene"><div class="rack"><strong>左側</strong><small>不能放泡芙</small></div><div class="rack center"><strong>目前架</strong><small>已有泡芙</small></div><div class="rack"><strong>右側</strong><small>不能放泡芙</small></div><div class="aisle">作業走道</div><div class="rack facing"><strong>正對面</strong><small>不能放泡芙</small></div></div></div>
+<div class="feature-body"><div class="label">功能 B · 位置檢查</div><h3 id="b-heading">相鄰儲位同商品防呆</h3><p class="summary">掃描目的層架時，即時比對左右及正對面的大架，避免同商品上架衝突。</p>
+<ul class="details"><li>依序模擬掃描貨物編號、商品條碼與儲位</li><li>自動攔截相鄰大架的相同商品</li><li>允許不同商品上架，成功後更新模擬庫存</li></ul>
+<a class="action alt" href="./adjacent.html">開始體驗功能 B →</a></div>
+</article>
+</div>
+<section class="notes" aria-label="操作與設計說明"><h2>關於這個互動展示</h2><div class="process">
+<div><h3>操作方式</h3><p>選擇上方功能後，依畫面指示按下「模擬掃描」，或手動輸入示範條碼。兩個模組各自操作，不會互相更改進度。</p></div>
+<div><h3>資料與限制</h3><p>本網站使用虛構商品、架位與庫存資料，僅用來展示通用倉儲流程改善概念；不代表任何企業的正式系統或作業規範，且不連接實際庫存。</p></div>
+</div></section>
+<footer>個人概念原型 · 純前端靜態網頁 · 所有掃碼、庫存與作業結果均為模擬資料</footer>
+</main>
+</body>
+</html>
