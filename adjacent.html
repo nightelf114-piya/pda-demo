@@ -25,12 +25,14 @@ a{color:#145ba6}a:hover{text-decoration:none}.wrap{max-width:1024px;margin:auto;
 .good-text{color:#147048}
 @media(max-width:740px){.columns{grid-template-columns:1fr}.wrap{padding:12px 10px 35px}.top{flex-wrap:wrap}.back{padding:0}.screen{min-height:0}.panel{padding:14px}.device{max-width:510px;margin:auto}.work{padding:17px 15px}.examples{gap:7px}}
 @media(max-width:360px){.scanfield{flex-wrap:wrap}.scanfield button{width:100%}.examples{grid-template-columns:1fr}}
+.language-line{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0 0 8px;font-size:13px}.language-line select{font:inherit;padding:9px;border:1px solid #b7ccdf;border-radius:8px;background:#fff;color:#18334b;min-height:44px}.language-line label{font-weight:650}.language-line select:focus-visible{outline:3px solid #e4a32b;outline-offset:2px}
 </style>
 </head>
 <body>
 <main class="wrap">
+<div class="language-line"><label for="demo-language">語言 / Language / 언어</label><select id="demo-language" aria-label="Language"><option value="zh-Hant">繁體中文</option><option value="en">English</option><option value="ko">한국어</option></select></div>
 <header class="top"><div><div class="eyebrow">倉儲上架情境模擬 · 模組 B · v2.1</div><h1>相鄰大架同商品防呆</h1><p>依序掃描貨物編號、商品條碼與儲位條碼；所有資料均為虛構示範。</p></div><a class="back" href="./home.html">← 返回專案入口</a></header>
-<nav class="project-nav" aria-label="專案功能切換"><a href="./home.html">功能總覽</a><a href="./index.html">A｜數量與結案</a><a href="./adjacent.html" aria-current="page">B｜相鄰儲位</a></nav>
+<nav class="project-nav" aria-label="專案功能切換"><a href="./home.html">功能總覽</a><a href="./a.html">A｜數量與結案</a><a href="./adjacent.html" aria-current="page">B｜相鄰儲位</a></nav>
 <div class="columns">
 <section class="device" aria-label="PDA 模擬操作區"><div class="screen"><div class="device-head"><strong>倉儲管理｜上架作業</strong><span>離線示範</span></div><nav class="steps" id="steps" aria-label="作業步驟"></nav><div class="work" id="app" aria-live="polite"></div></div></section>
 <div><section class="panel"><h3>倉庫架位俯視圖</h3><p>每個大架有五層：101（最底層）至 501（最高層）。掃描層架條碼後，才會標出相鄰衝突。</p><div id="map" class="warehouse" aria-label="兩排各四個大架，中間為走道"></div><div class="legend"><span><i class="dot g"></i>本次儲位通過</span><span><i class="dot r"></i>本次儲位不通過</span><span><i class="dot y"></i>查到同商品的相鄰架</span></div></section>
@@ -41,6 +43,140 @@ a{color:#145ba6}a:hover{text-decoration:none}.wrap{max-width:1024px;margin:auto;
 <script>
 'use strict';
 (function(){
+
+const PDA_I18N={
+ "功能總覽":["Overview", "기능 개요"],
+ "A｜數量與結案":["A | Quantity & closing", "A | 수량 및 마감"],
+ "B｜相鄰儲位":["B | Adjacent racks", "B | 인접 선반"],
+ "相鄰大架同商品防呆":["Same-item adjacent-rack safeguard", "인접 선반 동일 상품 방지"],
+ "依序掃描貨物編號、商品條碼與儲位條碼；所有資料均為虛構示範。":["Scan cargo ID, item barcode, then shelf location. All data is fictional.", "화물 번호, 상품 바코드, 선반 위치를 차례로 스캔하세요. 모든 데이터는 가상입니다."],
+ "← 返回專案入口":["← Back to overview", "← 프로젝트 홈으로"],
+ "倉儲管理｜上架作業":["Warehouse | Putaway", "창고 관리 | 적치 작업"],
+ "離線示範":["Offline demo", "오프라인 데모"],
+ "倉庫架位俯視圖":["Warehouse rack map", "창고 선반 배치도"],
+ "每個大架有五層：101（最底層）至 501（最高層）。掃描層架條碼後，才會標出相鄰衝突。":["Each rack has five levels, 101 (bottom) to 501 (top). Conflicts appear after scanning a location.", "각 선반은 101(맨 아래)부터 501(맨 위)까지 5단입니다. 위치 스캔 후 충돌이 표시됩니다."],
+ "本次儲位通過":["Location passes", "위치 통과"],
+ "本次儲位不通過":["Location blocked", "위치 차단"],
+ "查到同商品的相鄰架":["Neighbor with same item", "동일 상품 인접 선반"],
+ "貨物與庫存狀態":["Cargo & inventory", "화물 및 재고 현황"],
+ "成功上架會更新下方模擬庫存，失敗不會寫入。":["Successful putaway updates demo inventory; failed attempts do not.", "적치 성공 시 데모 재고가 갱신되며 실패 시 반영되지 않습니다."],
+ "展開查看各架庫存":["Expand rack inventory", "선반별 재고 보기"],
+ "系統防呆規則":["Placement safety rules", "적치 오류 방지 규칙"],
+ "不同商品可以放在相鄰大架；相同商品只要存在左右或正對面大架的任一層，就禁止上架。斜對角不受此規則限制。同一大架最多六種商品。":["Different items may occupy adjacent racks. A matching item anywhere on the left, right, or facing rack blocks putaway. Diagonal racks are not restricted. Each rack holds up to six item types.", "서로 다른 상품은 인접 선반에 보관할 수 있습니다. 좌우 또는 맞은편 선반의 어느 층에든 동일 상품이 있으면 적치를 차단합니다. 대각선은 제한하지 않으며 각 선반은 최대 6종까지 보관합니다."],
+ "此頁為通用倉儲作業情境的互動原型，不代表任何企業的正式系統、作業規範或即時庫存。若用於真實環境，仍須由後端重新檢查，並妥善處理多人同時上架的資料一致性。":["This is a fictional warehouse workflow prototype, not an official company system, procedure or live inventory. Real deployment requires server-side validation and concurrency control.", "이 페이지는 가상의 창고 작업 시연이며 특정 기업의 공식 시스템·절차·실시간 재고가 아닙니다. 실제 운영 시 서버 재검사 및 동시 작업 관리가 필요합니다."],
+ "↺ 重置整個示範":["↺ Reset demo", "↺ 데모 초기화"],
+ "獨立練習用互動展示。貨物編號、商品條碼、儲位與庫存皆為模擬資料，並非來自任何實際倉庫。不使用相機掃碼、資料庫、外部 API 或瀏覽器永久儲存。":["Interactive training demo. All cargo IDs, barcodes, locations and stock are fictional. No camera, database, external API or persistent browser storage is used.", "훈련용 시연입니다. 화물 번호, 바코드, 위치, 재고는 모두 가상입니다. 카메라, 데이터베이스, 외부 API, 브라우저 영구 저장을 사용하지 않습니다."],
+ "本頁使用「模擬掃描」按鈕或手動輸入來呈現一般掃碼作業流程。":["Use the simulated scan buttons or manual input to try the workflow.", "모의 스캔 버튼이나 직접 입력으로 작업 흐름을 체험할 수 있습니다."],
+ "貨物編號":["Cargo ID", "화물 번호"],
+ "商品條碼":["Item barcode", "상품 바코드"],
+ "層架位置":["Shelf location", "선반 위치"],
+ "完成上架":["Complete putaway", "적치 완료"],
+ "✓ 可以上架":["✓ Placement allowed", "✓ 적치 가능"],
+ "✕ 無法上架":["✕ Placement blocked", "✕ 적치 불가"],
+ "提示":["Notice", "안내"],
+ "貨物：":["Cargo: ", "화물: "],
+ "件待上架":[" units pending", "개 적치 대기"],
+ "模擬掃描 ":["Simulate scan ", "모의 스캔 "],
+ "條碼 ":["Barcode ", "바코드 "],
+ "｜ 待上架 ":[" | Pending ", " | 대기 "],
+ "測試左側架位":["Test left rack", "왼쪽 선반 테스트"],
+ "測試右側架位":["Test right rack", "오른쪽 선반 테스트"],
+ "測試正對面架位":["Test facing rack", "맞은편 선반 테스트"],
+ "測試其他位置":["Test other location", "다른 위치 테스트"],
+ "測試同一大架":["Test same rack", "같은 선반 테스트"],
+ "測試六種商品上限":["Test six-item limit", "6종 제한 테스트"],
+ "1. 掃描貨物編號":["1. Scan cargo ID", "1. 화물 번호 스캔"],
+ "先確認這次要上架哪一批貨物，才能帶出該批商品。":["Scan the cargo ID before choosing its items.", "먼저 화물 번호를 스캔한 후 해당 상품을 선택하세요."],
+ "示範貨物編號":["Demo cargo ID", "데모 화물 번호"],
+ "或手動輸入貨物編號":["Or enter cargo ID", "또는 화물 번호 직접 입력"],
+ "確認掃描":["Confirm scan", "스캔 확인"],
+ "2. 掃描商品條碼":["2. Scan item barcode", "2. 상품 바코드 스캔"],
+ "掃描商品後才可掃層架。僅列出這批貨物內的商品。":["Scan an item before choosing a shelf. Only items from this cargo are listed.", "선반을 선택하기 전에 상품을 스캔하세요. 해당 화물의 상품만 표시됩니다."],
+ "或手動輸入商品條碼":["Or enter item barcode", "또는 상품 바코드 직접 입력"],
+ "返回貨物編號":["Back to cargo ID", "화물 번호로 돌아가기"],
+ "3. 掃描層架位置":["3. Scan shelf location", "3. 선반 위치 스캔"],
+ "已掃描：":["Scanned: ", "스캔됨: "],
+ "請掃描目的層架，掃描當下自動檢查周圍大架是否已有相同商品。":["Scan the destination shelf. Neighboring racks are checked immediately.", "목적지 선반을 스캔하면 주변 선반의 동일 상품을 즉시 확인합니다."],
+ "示範層架位置（整個儲位條碼）":["Demo location (full barcode)", "데모 선반 위치(전체 바코드)"],
+ "掃描並檢查":["Scan & check", "스캔 및 검사"],
+ "101 最底層、501 最高層。以下按鈕相當於掃碼槍掃描。":["101 is bottom; 501 is top. Buttons simulate barcode scans.", "101은 맨 아래, 501은 맨 위입니다. 버튼은 바코드 스캔을 시뮬레이션합니다."],
+ "換一個商品":["Choose another item", "다른 상품 선택"],
+ "4. 確認上架數量":["4. Confirm quantity", "4. 적치 수량 확인"],
+ "層架掃描已通過，現在才允許確認上架。":["Location check passed. Confirm the quantity to proceed.", "위치 검사를 통과했습니다. 적치 수량을 확인하세요."],
+ "✓ 儲位檢查通過":["✓ Location check passed", "✓ 위치 검사 통과"],
+ "商品：":["Item: ", "상품: "],
+ "儲位：":["Location: ", "위치: "],
+ "左右及正對面大架均未發現相同商品。":["No matching items in left, right or facing racks.", "좌우 또는 맞은편 선반에 동일 상품이 없습니다."],
+ "本次上架數量（剩餘 ":["Quantity (remaining ", "적치 수량(남음 "],
+ "✓ 確認上架並更新庫存":["✓ Confirm and update inventory", "✓ 확인 후 재고 갱신"],
+ "重新掃描層架":["Rescan location", "선반 다시 스캔"],
+ "✓ 上架完成":["✓ Putaway complete", "✓ 적치 완료"],
+ "已成功寫入模擬庫存":["Demo inventory updated", "데모 재고 갱신 완료"],
+ "上架儲位：":["Placed at: ", "적치 위치: "],
+ "本商品尚餘 ":["Remaining for this item: ", "이 상품 잔여: "],
+ "掃描下一項商品":["Scan next item", "다음 상품 스캔"],
+ "同商品繼續上架":["Continue same item", "동일 상품 계속 적치"],
+ "全部完成":["All done", "전체 완료"],
+ "本批貨物已全數上架！":["All cargo items have been placed!", "모든 화물 상품 적치 완료!"],
+ "左右或正對面大架已有相同商品，禁止上架。":["Same item found in a neighboring rack. Placement blocked.", "인접 선반에 동일 상품이 있어 적치를 차단합니다."],
+ "此大架已有六種商品，不能放入第七種。":["Rack already holds six item types. A seventh is not allowed.", "이 선반에는 이미 6종이 있어 7번째 상품은 적치할 수 없습니다."],
+ "商品不屬於目前貨物，或條碼無效。":["Item is not in this cargo or barcode is invalid.", "상품이 해당 화물에 없거나 바코드가 잘못되었습니다."],
+ "層架條碼無效，格式應為 A1-101 至 B4-501 的有效儲位。":["Invalid shelf barcode. Use a valid location such as A1-101 or B4-501.", "선반 바코드가 잘못되었습니다. A1-101 또는 B4-501과 같은 유효한 위치를 사용하세요."],
+ "上架數量必須是 1 至剩餘數量的整數。":["Quantity must be a whole number between 1 and the remaining amount.", "수량은 1부터 잔여 수량 사이의 정수여야 합니다."],
+ "請輸入有效正整數。":["Enter a valid positive whole number.", "올바른 양의 정수를 입력하세요."],
+ "貨物編號不在 DEMO 資料內，請使用 GOODS-001。":["Cargo ID not found. Use GOODS-001.", "화물 번호를 찾을 수 없습니다. GOODS-001을 사용하세요."],
+ "這個商品條碼不屬於本批貨物。":["This item barcode is not in this cargo.", "이 상품 바코드는 해당 화물에 없습니다."],
+ "此商品已全數上架，請選擇其他商品。":["This item is already fully placed. Choose another item.", "이 상품은 모두 적치되었습니다. 다른 상품을 선택하세요."],
+ "左側":["Left", "왼쪽"],
+ "右側":["Right", "오른쪽"],
+ "正對面":["Facing", "맞은편"],
+ "已有「":["Already has \"", "이미 있음: \""],
+ "大架":["rack", "선반"],
+ "種類":["Item types", "상품 종류"],
+ "層架／商品／數量":["Shelf / Item / Qty", "선반 / 상품 / 수량"],
+ "空架":["Empty", "비어 있음"],
+ "泡芙":["Cream puff", "슈크림"],
+ "餅乾":["Cookies", "쿠키"],
+ "洋芋片":["Potato chips", "감자칩"],
+ "飲料":["Drinks", "음료"],
+ "泡麵":["Instant noodles", "라면"],
+ "巧克力":["Chocolate", "초콜릿"],
+ "茶包":["Tea bags", "티백"],
+ "果凍":["Jelly", "젤리"],
+ "↕　走道（A、B 兩排相對）　↕":["↕ Aisle (rows A and B face each other) ↕", "↕ 통로 (A/B 선반 마주 봄) ↕"],
+ "已上架 ":["Placed ", "적치 완료 "],
+ " 件待上架":[" pending", "개 대기"],
+ " 件":[" units", "개"],
+ " 種":[" types", "종"],
+ "例如 GOODS-001":["e.g. GOODS-001", "예: GOODS-001"],
+ "例如 A1-101":["e.g. A1-101", "예: A1-101"],
+};
+let demoLanguage='zh-Hant';
+const originalNodes=new WeakMap();
+function translatePhrase(raw){
+ if(demoLanguage==='zh-Hant')return raw;
+ const index=demoLanguage==='en'?0:1;
+ if(PDA_I18N[raw])return PDA_I18N[raw][index];
+ // Replace longer phrases first, preserving user-entered identifiers and numbers.
+ return Object.keys(PDA_I18N).sort((a,b)=>b.length-a.length).reduce((v,k)=>v.split(k).join(PDA_I18N[k][index]),raw);
+}
+function applyLanguage(){
+ document.documentElement.lang=demoLanguage;
+ const lang=document.getElementById('demo-language'); if(lang)lang.value=demoLanguage;
+ document.title=demoLanguage==='en'?'Warehouse PDA | Adjacent rack safeguard':demoLanguage==='ko'?'창고 PDA | 인접 선반 동일 상품 방지':'PDA 倉儲上架｜相鄰大架防呆 DEMO';
+ const walk=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT);
+ let node;
+ while((node=walk.nextNode())){
+  if(node.parentElement.closest('#demo-language'))continue;
+  if(!originalNodes.has(node))originalNodes.set(node,node.nodeValue);
+  node.nodeValue=translatePhrase(originalNodes.get(node));
+ }
+ document.querySelectorAll('input[placeholder]').forEach(el=>{
+  if(!el.dataset.originalPlaceholder)el.dataset.originalPlaceholder=el.getAttribute('placeholder');
+  el.placeholder=translatePhrase(el.dataset.originalPlaceholder);
+ });
+}
+
 const PRODUCTS=[
  {sku:'4710009000001',name:'泡芙',qty:12},
  {sku:'4710009000002',name:'餅乾',qty:8},
@@ -145,7 +281,7 @@ function renderSummary(){
  $('summary').innerHTML=`<div class="between"><span class="token">${CARGO}</span><span class="muted">已上架 ${total-remaining} / ${total} 件</span></div><div class="fine" style="margin-top:8px">${PRODUCTS.map(p=>`${p.name} ${rem[p.sku]} 件待上架`).join('　·　')}</div>`;
  $('stock').innerHTML='<table><thead><tr><th>大架</th><th>商品種類</th><th>層架／商品／數量</th></tr></thead><tbody>'+RACKS.map(r=>`<tr><td>${r}</td><td>${new Set(inventory[r].map(x=>x[1])).size}/6</td><td>${inventory[r].map(e=>`${e[0]} ${escapeHtml(productNames[e[1]])} ×${e[2]}`).join('、')||'空架'}</td></tr>`).join('')+'</tbody></table>';
 }
-function render(){topSteps();renderWork();renderMap();renderSummary()}
+function render(){topSteps();renderWork();renderMap();renderSummary();applyLanguage()}
 function setMessage(text='',kind='info'){message=text;messageKind=kind}
 function scanCargo(code){
  if(step!=='cargo')return;
@@ -208,6 +344,7 @@ document.addEventListener('submit',e=>{
  if(form.dataset.form==='commit')putaway(data.get('quantity'));
 });
 // Expose pure inspection helpers for reproducible browser tests (not real inventory APIs).
+document.getElementById('demo-language').addEventListener('change',e=>{demoLanguage=e.target.value;applyLanguage()});
 window.PdaDemoTest={neighbors,parseLocation,inspect,getInventory:()=>JSON.parse(JSON.stringify(inventory)),getRemaining:()=>({...rem})};
 render();
 })();
